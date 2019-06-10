@@ -16,7 +16,7 @@ Expressy is a simple node express based static websever and proxy.
     "domain": "testtest1.com",
     "type": "static",
     "source": "./test"
-},
+}
 ```
 
 ### proxy
@@ -25,5 +25,14 @@ Expressy is a simple node express based static websever and proxy.
     "domain": "testtest2.com",
     "type": "proxy",
     "source": "127.0.0.1:8080"
-},
+}
+```
+
+### alias
+```
+{
+    "domain": "testtest3.com",
+    "type": "alias",
+    "source": "testtest2.com"
+}
 ```

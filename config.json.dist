@@ -9,8 +9,8 @@
         },
         {
             "domain": "testtest2.com",
-            "type": "static",
-            "source": "./test2"
+            "type": "alias",
+            "source": "testtest1.com"
         },
         {
             "domain": "testtest3.com",
