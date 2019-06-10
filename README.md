@@ -1,6 +1,7 @@
 # Expressy
-Expressy is a simple node express based websever and proxy.
+Expressy is a simple node express based static websever and proxy.
 
+![Expressy Logo](./assets/logo.png)
 
 ## Howto
 * copy `config.json.dist` to `config.json` and apply your server settings
