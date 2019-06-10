@@ -1,0 +1,21 @@
+{
+    "port": 80,
+    "hosts":
+    [
+        {
+            "domain": "testtest1.com",
+            "type": "static",
+            "source": "./test"
+        },
+        {
+            "domain": "testtest2.com",
+            "type": "static",
+            "source": "./test2"
+        },
+        {
+            "domain": "testtest3.com",
+            "type": "proxy",
+            "source": "127.0.0.1:8080"
+        }
+    ]
+}
