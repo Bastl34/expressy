@@ -36,3 +36,17 @@ Expressy is a simple node express based static websever and proxy.
     "source": "testtest2.com"
 }
 ```
+
+## run with forever service
+```
+#isntall dependencies
+sudo npm install -g forever
+sudo npm install -g forever-service
+
+#add new service
+cd expressy
+sudo forever-service install expressy --script index.js --noGracefulShutdown --start
+
+#if you want to uninstall the service
+sudo forever-service delete expressy
+```
