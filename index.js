@@ -19,6 +19,8 @@ config.hosts.forEach(host =>
         host.type = HOST_TYPE.static;
 
     hosts[host.domain] = host;
+
+    console.log(host.domain + ' listening on port ' + config.port  + '...');
 });
 
 express().use((req, res, next) =>
