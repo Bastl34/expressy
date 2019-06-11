@@ -1,5 +1,5 @@
 # Expressy
-Expressy is a simple node express based static webserver and proxy.
+Expressy is a simple node-express based static webserver and proxy.
 
 ![Expressy Logo](./assets/logo.png)
 
