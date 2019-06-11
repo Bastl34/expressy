@@ -6,7 +6,13 @@
     "license": "MIT",
     "repository": "npm/npm",
     "main": "index.js",
-    "dependencies": {
+    "scripts":
+    {
+        "start": "node index.js",
+        "validate": "node validate.js"
+    },
+    "dependencies":
+    {
         "body-parser": "^1.19.0",
         "cors": "^2.8.5",
         "express": "^4.17.1",

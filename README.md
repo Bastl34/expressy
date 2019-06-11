@@ -9,9 +9,20 @@ Expressy is a simple node-express based static webserver and proxy.
 * use forever, forver-service or whatever to let the server run forever
 
 
+## Commands
+
+```bash
+#start
+npm run start
+
+#validate config
+npm run validate
+```
+
+
 ## Types
 ### static
-```
+```json
 {
     "domain": "testtest1.com",
     "type": "static",
@@ -20,7 +31,7 @@ Expressy is a simple node-express based static webserver and proxy.
 ```
 
 ### proxy
-```
+```json
 {
     "domain": "testtest2.com",
     "type": "proxy",
@@ -29,7 +40,7 @@ Expressy is a simple node-express based static webserver and proxy.
 ```
 
 ### alias
-```
+```json
 {
     "domain": "testtest3.com",
     "type": "alias",
@@ -38,7 +49,7 @@ Expressy is a simple node-express based static webserver and proxy.
 ```
 
 ## run with forever service
-```
+```bash
 #isntall dependencies
 sudo npm install -g forever
 sudo npm install -g forever-service
