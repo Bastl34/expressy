@@ -1,3 +1,12 @@
-const config = require('./config.json');
+const fs = require('fs');
 
-console.log("config is valid ✅")
+try
+{
+    const config = JSON.parse(fs.readFileSync('./config.json'));
+    console.log("config is valid ✅")
+}
+catch(error)
+{
+    console.error(error);
+    console.log("config is not valid ❌")
+}

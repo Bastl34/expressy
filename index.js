@@ -1,7 +1,7 @@
+const fs = require('fs');
+
 const express = require('express');
 const proxy = require('express-http-proxy');
-
-const config = require('./config.json');
 
 const HOST_TYPE =
 {
@@ -11,25 +11,26 @@ const HOST_TYPE =
     redirect: 4
 };
 
+const CONFIG_FILE = './config.json';
+
 const hosts = {};
+let config = {};
 
-// config
-config.hosts.forEach(host =>
+// helpers
+function loadJSONfromFile(file)
 {
-    if (host.type == 'proxy')
-        host.type = HOST_TYPE.proxy;
-    else if (host.type == 'alias')
-        host.type = HOST_TYPE.alias;
-    else if (host.type == 'redirect')
-        host.type = HOST_TYPE.redirect;
-    else
-        host.type = HOST_TYPE.static;
+    try
+    {
+        return JSON.parse(fs.readFileSync(file));
+    }
+    catch(error)
+    {
+        console.error(error);
+        return null;
+    }
+}
 
-    hosts[host.domain] = host;
-});
-
-// resolve aliases
-const resolveHost = (host, depth=1, maxDepth=5) =>
+function resolveHost(host, depth=1, maxDepth=5)
 {
     if (depth >= maxDepth)
         return null;
@@ -44,19 +45,57 @@ const resolveHost = (host, depth=1, maxDepth=5) =>
     return null;
 }
 
-for(let hostKey in hosts)
+function loadConfig(json)
 {
-    if (hosts[hostKey].type == HOST_TYPE.alias)
+    conf = json;
+
+    // config
+    conf.hosts.forEach(host =>
     {
-        let resolvedHost = resolveHost(hosts[hostKey]);
-        if (resolvedHost)
+        if (host.type == 'proxy')
+            host.type = HOST_TYPE.proxy;
+        else if (host.type == 'alias')
+            host.type = HOST_TYPE.alias;
+        else if (host.type == 'redirect')
+            host.type = HOST_TYPE.redirect;
+        else
+            host.type = HOST_TYPE.static;
+
+        hosts[host.domain] = host;
+    });
+
+    for(let hostKey in hosts)
+    {
+        if (hosts[hostKey].type == HOST_TYPE.alias)
         {
-            console.log(hosts[hostKey].domain + ' alias resolved to ' + resolvedHost.domain)
-            hosts[hostKey] = resolvedHost;
+            let resolvedHost = resolveHost(hosts[hostKey]);
+            if (resolvedHost)
+            {
+                console.log(hosts[hostKey].domain + ' alias resolved to ' + resolvedHost.domain)
+                hosts[hostKey] = resolvedHost;
+            }
         }
+        else
+            console.log(hosts[hostKey].domain + ' listening on port ' + conf.port  + '...');
     }
-    else
-        console.log(hosts[hostKey].domain + ' listening on port ' + config.port  + '...');
+
+    return conf;
+}
+
+// load config
+config = loadConfig(loadJSONfromFile(CONFIG_FILE));
+if (config.watchConfig)
+{
+    fs.watchFile(CONFIG_FILE, (curr, prev) =>
+    {
+        console.log('reloading config...');
+
+        let json = loadJSONfromFile(CONFIG_FILE);
+        if (!json)
+            console.error('can not reload json - parse error')
+        else
+            config = loadConfig(json);
+    });
 }
 
 
