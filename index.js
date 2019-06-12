@@ -7,7 +7,8 @@ const HOST_TYPE =
 {
     static: 1,
     proxy: 2,
-    alias: 3
+    alias: 3,
+    redirect: 4
 };
 
 const hosts = {};
@@ -19,6 +20,8 @@ config.hosts.forEach(host =>
         host.type = HOST_TYPE.proxy;
     else if (host.type == 'alias')
         host.type = HOST_TYPE.alias;
+    else if (host.type == 'redirect')
+        host.type = HOST_TYPE.redirect;
     else
         host.type = HOST_TYPE.static;
 
@@ -72,6 +75,8 @@ express().use((req, res, next) =>
         return express.static(host.source)(req, res, next);
     else if (host.type == HOST_TYPE.proxy)
         return proxy(host.source)(req, res, next);
+    else if (host.type == HOST_TYPE.redirect)
+        return res.redirect(host.source)
     else
         return res.status(500).send('server error');
 

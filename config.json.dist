@@ -16,6 +16,11 @@
             "domain": "testtest3.com",
             "type": "proxy",
             "source": "127.0.0.1:8080"
+        },
+        {
+            "domain": "testtest4.com",
+            "type": "redirect",
+            "source": "https://google.de"
         }
     ]
 }

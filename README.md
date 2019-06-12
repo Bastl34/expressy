@@ -48,9 +48,18 @@ npm run validate
 }
 ```
 
+### redirect
+```json
+{
+    "domain": "testtest4.com",
+    "type": "redirect",
+    "source": "https://google.com"
+}
+```
+
 ## run with forever service
 ```bash
-#isntall dependencies
+#install dependencies
 sudo npm install -g forever
 sudo npm install -g forever-service
 
