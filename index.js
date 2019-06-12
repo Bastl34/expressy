@@ -13,7 +13,7 @@ const HOST_TYPE =
 
 const CONFIG_FILE = './config.json';
 
-const hosts = {};
+let hosts = {};
 let config = {};
 
 // helpers
@@ -50,6 +50,7 @@ function loadConfig(json)
     conf = json;
 
     // config
+    hosts = {};
     conf.hosts.forEach(host =>
     {
         if (host.type == 'proxy')
