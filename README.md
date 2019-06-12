@@ -1,7 +1,7 @@
 # Expressy
 Expressy is a simple node-express based static webserver and proxy.
 
-![Expressy Logo](./assets/logo.png)
+![Expressy Logo](./docs/logo.png)
 
 ## Howto
 * copy `config.json.dist` to `config.json` and apply your server settings
@@ -26,7 +26,7 @@ npm run validate
 {
     "domain": "testtest1.com",
     "type": "static",
-    "source": "./test"
+    "target": "./test"
 }
 ```
 
@@ -35,7 +35,7 @@ npm run validate
 {
     "domain": "testtest2.com",
     "type": "proxy",
-    "source": "127.0.0.1:8080"
+    "target": "127.0.0.1:8080"
 }
 ```
 
@@ -44,7 +44,7 @@ npm run validate
 {
     "domain": "testtest3.com",
     "type": "alias",
-    "source": "testtest2.com"
+    "target": "testtest2.com"
 }
 ```
 
@@ -53,7 +53,7 @@ npm run validate
 {
     "domain": "testtest4.com",
     "type": "redirect",
-    "source": "https://google.com"
+    "target": "https://google.com"
 }
 ```
 

@@ -34,12 +34,12 @@ const resolveHost = (host, depth=1, maxDepth=5) =>
     if (depth >= maxDepth)
         return null;
 
-    if (host.source in hosts)
+    if (host.target in hosts)
     {
-        if (hosts[host.source].type == HOST_TYPE.alias)
-            return resolveHost(hosts[host.source], ++depth, maxDepth);
+        if (hosts[host.target].type == HOST_TYPE.alias)
+            return resolveHost(hosts[host.target], ++depth, maxDepth);
         else
-            return hosts[host.source];
+            return hosts[host.target];
     }
     return null;
 }
@@ -72,11 +72,11 @@ express().use((req, res, next) =>
         return res.status(500).send('alias cannot be resolved');
 
     if (host.type == HOST_TYPE.static)
-        return express.static(host.source)(req, res, next);
+        return express.static(host.target)(req, res, next);
     else if (host.type == HOST_TYPE.proxy)
-        return proxy(host.source)(req, res, next);
+        return proxy(host.target)(req, res, next);
     else if (host.type == HOST_TYPE.redirect)
-        return res.redirect(host.source)
+        return res.redirect(host.target)
     else
         return res.status(500).send('server error');
 

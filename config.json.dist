@@ -3,24 +3,24 @@
     "hosts":
     [
         {
-            "domain": "testtest1.com",
+            "domain": "expressy.local",
             "type": "static",
-            "source": "./test"
+            "target": "./docs"
         },
         {
             "domain": "testtest2.com",
             "type": "alias",
-            "source": "testtest1.com"
+            "target": "expressy.local"
         },
         {
             "domain": "testtest3.com",
             "type": "proxy",
-            "source": "127.0.0.1:8080"
+            "target": "127.0.0.1:80"
         },
         {
             "domain": "testtest4.com",
             "type": "redirect",
-            "source": "https://google.de"
+            "target": "https://google.de"
         }
     ]
 }
