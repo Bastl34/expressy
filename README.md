@@ -26,10 +26,12 @@ npm run validate
 {
     "domain": "testtest1.com",
     "type": "static",
-    "index": false, //if true: directory listings will be shown
+    "index": false,
     "target": "./test"
 }
 ```
+
+* if you want to enable directory listings: enable `index`
 
 ### proxy
 ```json
