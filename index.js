@@ -2,6 +2,7 @@ const fs = require('fs');
 
 const express = require('express');
 const proxy = require('express-http-proxy');
+const serveIndex = require('serve-index');
 
 const HOST_TYPE =
 {
@@ -111,13 +112,15 @@ express().use((req, res, next) =>
     if (host.type == HOST_TYPE.alias)
         return res.status(500).send('alias cannot be resolved');
 
-    if (host.type == HOST_TYPE.static)
+    if (host.type == HOST_TYPE.static && !host.index)
         return express.static(host.target)(req, res, next);
+    else if (host.type == HOST_TYPE.static && host.index)
+        return serveIndex(host.target, {'icons': true, 'view': 'details'})(req, res, () => { return express.static(host.target)(req, res, next) });
     else if (host.type == HOST_TYPE.proxy)
         return proxy(host.target)(req, res, next);
     else if (host.type == HOST_TYPE.redirect)
-        return res.redirect(host.target)
-    else
-        return res.status(500).send('server error');
+        return res.redirect(host.target);
+
+    return res.status(500).send('server error');
 
 }).listen(config.port);

@@ -22,6 +22,12 @@
             "domain": "testtest4.com",
             "type": "redirect",
             "target": "https://google.de"
+        },
+        {
+            "domain": "testtest5.com",
+            "type": "static",
+            "index": true,
+            "target": "./docs"
         }
     ]
 }
