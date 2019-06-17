@@ -4,6 +4,7 @@ const express = require('express');
 const proxy = require('express-http-proxy');
 const serveIndex = require('serve-index');
 const micromatch = require('micromatch');
+const dateFormat = require('dateformat');
 
 const HOST_TYPE =
 {
@@ -13,13 +14,43 @@ const HOST_TYPE =
     redirect: 4
 };
 
+const LOG_TYPE =
+{
+    sys: "sys",
+    access: "access",
+    error: "error"
+}
+
 const CONFIG_FILE = './config.json';
+const LOG_PATH = './logs/';
 
 let hosts = {};
 let hostKeys = [];
 let config = {};
 
-// helpers
+// ******************** logging ********************
+function log(type, message)
+{
+    let date = dateFormat(Date(), "yyyy-mm-dd dd:MM:ss");
+    message = date + ': ' + message + '\n';
+
+    process.stdout.write(message);
+
+    fs.appendFile(LOG_PATH + type + '.log',message, 'utf8', (error) =>
+    {
+        if (error)
+            console.error(error)
+    });
+}
+
+const logging =
+{
+    log: (message) => { log('sys', message) },
+    error: (message) => { log('error', message) },
+    access: (message) => { log('access', message) },
+}
+
+// ******************** helpers ********************
 function loadJSONfromFile(file)
 {
     try
@@ -75,41 +106,48 @@ function loadConfig(json)
             let resolvedHost = resolveHost(hosts[hostKey]);
             if (resolvedHost)
             {
-                console.log(hosts[hostKey].domain + ' alias resolved to ' + resolvedHost.domain)
+                logging.log(hosts[hostKey].domain + ' alias resolved to ' + resolvedHost.domain)
                 hosts[hostKey] = resolvedHost;
             }
         }
         else
-            console.log(hosts[hostKey].domain + ' listening on port ' + conf.port  + '...');
+            logging.log(hosts[hostKey].domain + ' listening on port ' + conf.port  + '...');
     }
 
     hostKeys = Object.keys(hosts);
-
-    console.log(hostKeys);
+    logging.log('domains: '+hostKeys);
 
     return conf;
 }
 
-// load config
+// ******************** load config ********************
+
+logging.log('start.. ');
+
 config = loadConfig(loadJSONfromFile(CONFIG_FILE));
 if (config.watchConfig)
 {
     fs.watchFile(CONFIG_FILE, (curr, prev) =>
     {
-        console.log('reloading config...');
+        logging.log('reloading config...');
+        sysLogger.info({message: 'listening on '+config.port});
 
         let json = loadJSONfromFile(CONFIG_FILE);
         if (!json)
-            console.error('can not reload json - parse error')
+            logging.error('can not reload json - parse error')
         else
             config = loadConfig(json);
     });
 }
 
+logging.log('listening on '+config.port);
 
-// listen
+
+// ******************** listen ********************
 express().use((req, res, next) =>
 {
+    logging.access('[' + req.connection.remoteAddress + '] ' + '[' + req.method + '] ' + req.protocol + '://' + req.hostname + req.originalUrl);
+
     //check host
     let host = hosts[req.hostname] || null;
     if (!host)
