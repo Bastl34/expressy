@@ -3,6 +3,7 @@ const fs = require('fs');
 const express = require('express');
 const proxy = require('express-http-proxy');
 const serveIndex = require('serve-index');
+const micromatch = require('micromatch');
 
 const HOST_TYPE =
 {
@@ -15,6 +16,7 @@ const HOST_TYPE =
 const CONFIG_FILE = './config.json';
 
 let hosts = {};
+let hostKeys = [];
 let config = {};
 
 // helpers
@@ -81,6 +83,10 @@ function loadConfig(json)
             console.log(hosts[hostKey].domain + ' listening on port ' + conf.port  + '...');
     }
 
+    hostKeys = Object.keys(hosts);
+
+    console.log(hostKeys);
+
     return conf;
 }
 
@@ -104,10 +110,23 @@ if (config.watchConfig)
 // listen
 express().use((req, res, next) =>
 {
-    if (!(req.hostname in hosts) && !('*' in hosts))
-        return res.status(404).send('not found');
+    //check host
+    let host = hosts[req.hostname] || null;
+    if (!host)
+    {
+        //go through all domains
+        for(let domain in hosts)
+        {
+            if (micromatch.isMatch(req.hostname, domain))
+            {
+                host = hosts[domain];
+                break;
+            }
+        }
+    }
 
-    const host = (req.hostname in hosts) ? hosts[req.hostname] : hosts['*'];
+    if (!host)
+        return res.status(404).send('not found');
 
     if (host.type == HOST_TYPE.alias)
         return res.status(500).send('alias cannot be resolved');

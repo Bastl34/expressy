@@ -61,7 +61,8 @@ npm run validate
 ```
 
 ## Wildcards
-* only `*` is supported as domain name is supported
+* wildcards support via
+  * https://github.com/micromatch/micromatch
 
 ## run with forever service
 ```bash
