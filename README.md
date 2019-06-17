@@ -60,6 +60,9 @@ npm run validate
 }
 ```
 
+## Wildcards
+* only `*` is supported as domain name is supported
+
 ## run with forever service
 ```bash
 #install dependencies

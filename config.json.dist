@@ -9,6 +9,11 @@
             "target": "./docs"
         },
         {
+            "domain": "*",
+            "type": "alias",
+            "target": "expressy.local"
+        },
+        {
             "domain": "testtest2.com",
             "type": "alias",
             "target": "expressy.local"

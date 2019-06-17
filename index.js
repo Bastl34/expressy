@@ -104,10 +104,10 @@ if (config.watchConfig)
 // listen
 express().use((req, res, next) =>
 {
-    if (!(req.hostname in hosts))
+    if (!(req.hostname in hosts) && !('*' in hosts))
         return res.status(404).send('not found');
 
-    const host = hosts[req.hostname];
+    const host = (req.hostname in hosts) ? hosts[req.hostname] : hosts['*'];
 
     if (host.type == HOST_TYPE.alias)
         return res.status(500).send('alias cannot be resolved');
