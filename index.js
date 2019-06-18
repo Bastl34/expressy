@@ -31,7 +31,7 @@ let config = {};
 // ******************** logging ********************
 function log(type, message)
 {
-    let date = dateFormat(Date(), "yyyy-mm-dd dd:MM:ss");
+    let date = dateFormat(Date(), "yyyy-mm-dd hh:MM:ss");
     message = date + ': ' + message + '\n';
 
     process.stdout.write(message);
@@ -146,6 +146,9 @@ logging.log('listening on '+config.port);
 // ******************** listen ********************
 express().use((req, res, next) =>
 {
+    if (!req.hostname)
+        req.hostname = '';
+
     logging.access('[' + req.connection.remoteAddress + '] ' + '[' + req.method + '] ' + req.protocol + '://' + req.hostname + req.originalUrl);
 
     //check host
