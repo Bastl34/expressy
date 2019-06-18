@@ -36,7 +36,7 @@ function pad(input, amount=2, fill='0')
 function log(type, message)
 {
     let date = new Date();
-    date = date.getFullYear() + '-' + pad(date.getMonth()) + '-' + pad(date.getDate()) + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
+    date = date.getFullYear() + '-' + pad(date.getMonth()+1) + '-' + pad(date.getDate()) + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
 
     message = date + ': ' + message + '\n';
 
