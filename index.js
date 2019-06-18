@@ -31,7 +31,7 @@ let config = {};
 // ******************** logging ********************
 function log(type, message)
 {
-    let date = dateFormat(Date(), "yyyy-mm-dd hh:MM:ss");
+    let date = dateFormat(Date(), "yyyy-mm-dd HH:MM:ss");
     message = date + ': ' + message + '\n';
 
     process.stdout.write(message);
