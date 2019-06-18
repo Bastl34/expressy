@@ -4,7 +4,6 @@ const express = require('express');
 const proxy = require('express-http-proxy');
 const serveIndex = require('serve-index');
 const micromatch = require('micromatch');
-const dateFormat = require('dateformat');
 
 const HOST_TYPE =
 {
@@ -29,9 +28,16 @@ let hostKeys = [];
 let config = {};
 
 // ******************** logging ********************
+function pad(input, amount=2, fill='0')
+{
+    return (input+'').padStart(amount, fill);
+}
+
 function log(type, message)
 {
-    let date = dateFormat(Date(), "yyyy-mm-dd HH:MM:ss");
+    let date = new Date();
+    date = date.getFullYear() + '-' + pad(date.getMonth()) + '-' + pad(date.getDate()) + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
+
     message = date + ': ' + message + '\n';
 
     process.stdout.write(message);
