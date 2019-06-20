@@ -181,6 +181,9 @@ logging.sys('listening on '+config.port);
 // ******************** listen ********************
 express().use((req, res, next) =>
 {
+    //apply header
+    res.setHeader('x-powered-by', 'Expressy');
+
     if (!req.hostname)
         req.hostname = '';
 
