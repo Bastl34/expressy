@@ -22,10 +22,12 @@ const LOG_TYPE =
 
 const CONFIG_FILE = './config.json';
 const LOG_PATH = './logs/';
+const LOG_FILES_AMOUNT = 14;
 
 let hosts = {};
 let hostKeys = [];
 let config = {};
+
 
 // ******************** logging ********************
 function pad(input, amount=2, fill='0')
@@ -51,10 +53,36 @@ function log(type, message)
 
 const logging =
 {
-    log: (message) => { log('sys', message) },
+    sys: (message) => { log('sys', message) },
     error: (message) => { log('error', message) },
     access: (message) => { log('access', message) },
 }
+
+function logRotate()
+{
+    logging.sys("rotating logs..");
+    for(let logType in logging)
+    {
+        for(let i=LOG_FILES_AMOUNT-1;i>=0;--i)
+        {
+            let oldFilePath = LOG_PATH + logType + (i>0 ? pad(i) : '') + '.log'
+            let newFilePath = LOG_PATH + logType + pad(i+1) + '.log' ;
+
+            //if it's the last file -> delete it
+            if (i == LOG_FILES_AMOUNT)
+            {
+                if (fs.existsSync(newFilePath))
+                    fs.unlinkSync(newFilePath)
+            }
+
+            //move
+            if (fs.existsSync(oldFilePath))
+                fs.renameSync(oldFilePath, newFilePath)
+        }
+    }
+}
+setTimeout(logRotate, 1000 * 60 * 60 * 24);
+
 
 // ******************** helpers ********************
 function loadJSONfromFile(file)
@@ -112,30 +140,31 @@ function loadConfig(json)
             let resolvedHost = resolveHost(hosts[hostKey]);
             if (resolvedHost)
             {
-                logging.log(hosts[hostKey].domain + ' alias resolved to ' + resolvedHost.domain)
+                logging.sys(hosts[hostKey].domain + ' alias resolved to ' + resolvedHost.domain)
                 hosts[hostKey] = resolvedHost;
             }
         }
         else
-            logging.log(hosts[hostKey].domain + ' listening on port ' + conf.port  + '...');
+            logging.sys(hosts[hostKey].domain + ' listening on port ' + conf.port  + '...');
     }
 
     hostKeys = Object.keys(hosts);
-    logging.log('domains: '+hostKeys);
+    logging.sys('domains: '+hostKeys);
 
     return conf;
 }
 
+
 // ******************** load config ********************
 
-logging.log('start.. ');
+logging.sys('start.. ');
 
 config = loadConfig(loadJSONfromFile(CONFIG_FILE));
 if (config.watchConfig)
 {
     fs.watchFile(CONFIG_FILE, (curr, prev) =>
     {
-        logging.log('reloading config...');
+        logging.sys('reloading config...');
         sysLogger.info({message: 'listening on '+config.port});
 
         let json = loadJSONfromFile(CONFIG_FILE);
@@ -146,7 +175,7 @@ if (config.watchConfig)
     });
 }
 
-logging.log('listening on '+config.port);
+logging.sys('listening on '+config.port);
 
 
 // ******************** listen ********************
