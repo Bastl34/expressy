@@ -27,7 +27,8 @@ npm run validate
     "domain": "testtest1.com",
     "type": "static",
     "index": false,
-    "target": "./test"
+    "target": "./test",
+    "filter": ["**.php"]
 }
 ```
 
@@ -61,7 +62,16 @@ npm run validate
 ```
 
 ## Wildcards
-* wildcards support via
+* wildcard support is done via micromatch
+  * https://github.com/micromatch/micromatch
+
+## Filters
+* Filtered files are not served
+* all `.` files and `.` directories are filterd by default
+* You can define filters for `"type": "static"`
+* If you want to filter all php files in all directories:
+  * `"filter": ["**.php"]`
+* Its based on micromatch:
   * https://github.com/micromatch/micromatch
 
 ## run with forever service

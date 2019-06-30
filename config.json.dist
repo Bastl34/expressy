@@ -6,7 +6,8 @@
         {
             "domain": "expressy.local",
             "type": "static",
-            "target": "./docs"
+            "target": "./docs",
+            "filter": ["**.php"]
         },
         {
             "domain": "*",

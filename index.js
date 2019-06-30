@@ -4,6 +4,7 @@ const express = require('express');
 const proxy = require('express-http-proxy');
 const serveIndex = require('serve-index');
 const micromatch = require('micromatch');
+const parseUrl = require('parseurl');
 
 const HOST_TYPE =
 {
@@ -154,6 +155,16 @@ function loadConfig(json)
     return conf;
 }
 
+function isFiltered(req, filter)
+{
+    let path = parseUrl(req).pathname;
+    let shouldBeFiltered = false;
+    if (filter && filter.length > 0)
+        shouldBeFiltered = micromatch.isMatch(path, filter);
+
+    return shouldBeFiltered;
+}
+
 
 // ******************** load config ********************
 
@@ -181,9 +192,6 @@ logging.sys('listening on '+config.port);
 // ******************** listen ********************
 express().use((req, res, next) =>
 {
-    //apply header
-    res.setHeader('x-powered-by', 'Expressy');
-
     if (!req.hostname)
         req.hostname = '';
 
@@ -210,15 +218,36 @@ express().use((req, res, next) =>
     if (host.type == HOST_TYPE.alias)
         return res.status(500).send('alias cannot be resolved');
 
+    // ******************** static
     if (host.type == HOST_TYPE.static && !host.index)
-        return express.static(host.target)(req, res, next);
+    {
+        if (isFiltered(req,host.filter))
+            return res.status(404).send('not found');
+        else
+            return express.static(host.target, { dotfiles: 'deny' })(req, res, next);
+    }
+
+    // ******************** static with index
     else if (host.type == HOST_TYPE.static && host.index)
-        return serveIndex(host.target, {'icons': true, 'view': 'details'})(req, res, () => { return express.static(host.target)(req, res, next) });
+    {
+        return serveIndex(host.target, {'icons': true, 'view': 'details'})(req, res, () =>
+        {
+            if (isFiltered(req,host.filter))
+                return res.status(404).send('not found');
+            else
+                return express.static(host.target, { dotfiles: 'deny' })(req, res, next);
+        });
+    }
+
+    // ******************** proxy
     else if (host.type == HOST_TYPE.proxy)
         return proxy(host.target)(req, res, next);
+
+    // ******************** redirect
     else if (host.type == HOST_TYPE.redirect)
         return res.redirect(host.target);
 
+    // ******************** error
     return res.status(500).send('server error');
 
 }).listen(config.port);
