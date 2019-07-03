@@ -241,7 +241,17 @@ express().use((req, res, next) =>
 
     // ******************** proxy
     else if (host.type == HOST_TYPE.proxy)
-        return proxy(host.target)(req, res, next);
+    {
+        return proxy(host.target,
+        {
+            proxyReqOptDecorator: (proxyReqOpts, srcReq) =>
+            {
+                let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                proxyReqOpts.headers['x-forwarded-for'] = ip;
+                return proxyReqOpts;
+            }
+        })(req, res, next);
+    }
 
     // ******************** redirect
     else if (host.type == HOST_TYPE.redirect)
