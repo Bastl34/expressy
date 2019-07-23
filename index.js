@@ -176,7 +176,7 @@ if (config.watchConfig)
     fs.watchFile(CONFIG_FILE, (curr, prev) =>
     {
         logging.sys('reloading config...');
-        sysLogger.info({message: 'listening on '+config.port});
+        logging.sys('listening on '+config.port);
 
         let json = loadJSONfromFile(CONFIG_FILE);
         if (!json)
