@@ -14,13 +14,6 @@ const HOST_TYPE =
     redirect: 4
 };
 
-const LOG_TYPE =
-{
-    sys: "sys",
-    access: "access",
-    error: "error"
-}
-
 const CONFIG_FILE = './config.json';
 const LOG_PATH = './logs/';
 const LOG_FILES_AMOUNT = 14;
@@ -192,19 +185,22 @@ logging.sys('listening on '+config.port);
 // ******************** listen ********************
 express().use((req, res, next) =>
 {
-    if (!req.hostname)
-        req.hostname = '';
+    //apply header
+    res.setHeader('x-powered-by', 'Expressy');
 
-    logging.access('[' + req.connection.remoteAddress + '] ' + '[' + req.method + '] ' + req.protocol + '://' + req.hostname + req.originalUrl);
+    let hostname = req.hostname || '';
+    let url = req.originalUrl || '';
+
+    logging.access('[' + req.connection.remoteAddress + '] ' + '[' + req.method + '] ' + req.protocol + '://' + hostname + url);
 
     //check host
-    let host = hosts[req.hostname] || null;
+    let host = hosts[hostname] || null;
     if (!host)
     {
         //go through all domains
         for(let domain in hosts)
         {
-            if (micromatch.isMatch(req.hostname, domain))
+            if (micromatch.isMatch(hostname, domain))
             {
                 host = hosts[domain];
                 break;
