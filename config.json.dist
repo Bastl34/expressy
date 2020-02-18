@@ -33,7 +33,8 @@
             "domain": "testtest5.com",
             "type": "static",
             "index": true,
-            "target": "./docs"
+            "target": "./docs",
+            "basicAuth": { "user": "user", "password": "password", "title": "protected area" }
         }
     ]
 }

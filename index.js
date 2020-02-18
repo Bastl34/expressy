@@ -214,6 +214,39 @@ express().use((req, res, next) =>
     if (host.type == HOST_TYPE.alias)
         return res.status(500).send('alias cannot be resolved');
 
+    // ******************** basic auth
+    if (host.basicAuth)
+    {
+        if (!req.headers["authorization"])
+        {
+            res.set('WWW-Authenticate', 'Basic realm="' + host.basicAuth.title + '", charset="UTF-8"');
+            return res.status(401).send('access denied');
+        }
+        else
+        {
+            let loginAllowed = false;
+            try
+            {
+                // parse login and password from headers
+                const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+                const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+
+                if (login && password && login === host.basicAuth.user && password === host.basicAuth.password)
+                    loginAllowed = true;
+            }
+            catch(e)
+            {
+                console.log(error);
+            }
+
+            if (!loginAllowed)
+            {
+                res.set('WWW-Authenticate', 'Basic realm="' + host.basicAuth.title + '", charset="UTF-8"');
+                return res.status(401).send('access denied');
+            }
+        }
+    }
+
     // ******************** static
     if (host.type == HOST_TYPE.static && !host.index)
     {
