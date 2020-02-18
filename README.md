@@ -61,6 +61,16 @@ npm run validate
 }
 ```
 
+### basic auth
+```json
+{
+    "domain": "testtest4.com",
+    "type": "redirect",
+    "target": "https://google.com",
+	"basicAuth": { "user": "user", "password": "password", "title": "protected area" }
+}
+```
+
 ## Wildcards
 * wildcard support is done via micromatch
   * https://github.com/micromatch/micromatch
