@@ -64,9 +64,10 @@ npm run validate
 ### basic auth
 ```json
 {
-    "domain": "testtest4.com",
-    "type": "redirect",
-    "target": "https://google.com",
+    "domain": "testtest1.com",
+    "type": "static",
+    "index": false,
+    "target": "./test",
     "basicAuth": { "user": "user", "password": "password", "title": "protected area" }
 }
 ```
