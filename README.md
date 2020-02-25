@@ -67,7 +67,7 @@ npm run validate
     "domain": "testtest4.com",
     "type": "redirect",
     "target": "https://google.com",
-	"basicAuth": { "user": "user", "password": "password", "title": "protected area" }
+    "basicAuth": { "user": "user", "password": "password", "title": "protected area" }
 }
 ```
 
