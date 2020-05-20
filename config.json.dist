@@ -34,7 +34,7 @@
             "type": "static",
             "index": true,
             "target": "./docs",
-            "basicAuth": { "user": "user", "password": "password", "title": "protected area" }
+            "basicAuth": { "user": {"password": "password"} }
         }
     ]
 }

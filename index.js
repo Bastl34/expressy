@@ -161,7 +161,7 @@ function isFiltered(req, filter)
 
 // ******************** load config ********************
 
-logging.sys('start.. ');
+logging.sys('start... ');
 
 config = loadConfig(loadJSONfromFile(CONFIG_FILE));
 if (config.watchConfig)
@@ -179,7 +179,7 @@ if (config.watchConfig)
     });
 }
 
-logging.sys('listening on '+config.port);
+logging.sys('listening on ' + config.port + '...');
 
 
 // ******************** listen ********************
@@ -219,7 +219,7 @@ express().use((req, res, next) =>
     {
         if (!req.headers["authorization"])
         {
-            res.set('WWW-Authenticate', 'Basic realm="' + host.basicAuth.title + '", charset="UTF-8"');
+            res.set('WWW-Authenticate', 'Basic realm="' + host.domain + '", charset="UTF-8"');
             return res.status(401).send('access denied');
         }
         else
@@ -231,7 +231,7 @@ express().use((req, res, next) =>
                 const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
                 const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
 
-                if (login && password && login === host.basicAuth.user && password === host.basicAuth.password)
+                if (login && password && login in host.basicAuth && password === host.basicAuth[login].password)
                     loginAllowed = true;
             }
             catch(e)
@@ -241,7 +241,7 @@ express().use((req, res, next) =>
 
             if (!loginAllowed)
             {
-                res.set('WWW-Authenticate', 'Basic realm="' + host.basicAuth.title + '", charset="UTF-8"');
+                res.set('WWW-Authenticate', 'Basic realm="' + host.domain + '", charset="UTF-8"');
                 return res.status(401).send('access denied');
             }
         }
